@@ -13,9 +13,8 @@ const Login = () => {
 
   const onNewScanResult = (decodedText, decodedResult) => {
     console.log("Decoded Text: ", decodedText);
-    const encryptedText = AES.encrypt(decodedText, "passphrase").toString();
-    setResult(encryptedText);
-    handleLogin(encodeURIComponent(encryptedText));
+    setResult(decodedText);
+    handleLogin(decodedText);
   };
 
   const handleLogin = async (encryptedText) => {
@@ -30,6 +29,7 @@ const Login = () => {
 
       await signInWithEmailAndPassword(auth, email, password);
       toast.success("Login successful!");
+      router.push("/dashboard");
     } catch (error) {
       console.error(error);
       toast.error(error.message);
@@ -37,8 +37,9 @@ const Login = () => {
   };
 
   return (
-    <div className="max-w-sm mx-auto">
-      <h1 className="mb-4 text-2xl font-bold">Login</h1>
+ 
+    <div className="max-w-sm mx-auto mt-4">
+      <h1 className="mb-4 text-2xl font-bold text-center">Login</h1>
       <form onSubmit={handleLogin}>
         <Html5QrcodePlugin
           fps={10}
@@ -47,14 +48,15 @@ const Login = () => {
           qrCodeSuccessCallback={onNewScanResult}
         />
         <button
-          className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline"
+          className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700 focus:outline-none mt-4 focus:shadow-outline"
           type="submit"
         >
-          Login
+        No need to click here, Just upload qr and you are good to go!!!
         </button>
       </form>
       <ToastContainer />
     </div>
+
   );
 };
 

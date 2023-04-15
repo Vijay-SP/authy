@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { ToastContainer, toast } from "react-toastify";
@@ -7,11 +7,19 @@ import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { generate } from "shortid";
 import { auth, db } from "../firebase/firebase";
 import { AES, enc } from "crypto-js";
+import QRCode from "react-qr-code";
+
 
 const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [qrCodeValue, setQrCodeValue] = useState("");
+  const canvasRef = useRef(null);
+
+  
+  
+  
+
 
   const handleRegister = async () => {
     try {
@@ -30,7 +38,7 @@ const Register = () => {
         "passphrase"
       ).toString();
       console.log(encryptedQrCodeValue);
-      setQrCodeValue(qrCodeValue);
+      setQrCodeValue(encryptedQrCodeValue);
 
       // Save QR code value to Firebase
       await setDoc(doc(db, "users", user.uid), {
@@ -47,8 +55,9 @@ const Register = () => {
   };
 
   return (
-    <div className="max-w-sm mx-auto">
-      <h1 className="mb-4 text-2xl font-bold">Register</h1>
+ 
+    <div className="max-w-sm mx-auto mt-5">
+      <h1 className="mb-4 text-2xl font-bold text-center">Register</h1>
       <form
         onSubmit={(event) => {
           event.preventDefault();
@@ -93,12 +102,14 @@ const Register = () => {
       </form>
       {qrCodeValue && (
         <div className="mt-4">
-          <p className="mb-2">Scan this QR code to login:</p>
-          <QRCode value={qrCodeValue} size={200} />
+          <p className="mb-2">Take a screen shot of this qr code for future login:</p>
+          <QRCode id="myqr" value={qrCodeValue} size={200} ref={canvasRef}/>
+         
         </div>
       )}
       <ToastContainer />
     </div>
+
   );
 };
 
